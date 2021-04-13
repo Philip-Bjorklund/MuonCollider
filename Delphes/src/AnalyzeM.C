@@ -101,6 +101,12 @@ void AnalyzeM(const char *inputFile, const char *outputFile){
      Int_t pair2jet1entry;
      Int_t pair2jet2entry;
 
+     Double_t VLCR05N4pair1Mass = 0;
+     Double_t VLCR05N4pair2Mass = 0;
+         
+     Double_t AKTjetpair1Mass = 0;
+     Double_t AKTjetpair2Mass = 0;
+
      cout << "Running Pairing up Algo..." << endl;
 //run over event entries
      for(Long64_t entry=0; entry < nEntries; entry++){
@@ -128,11 +134,17 @@ void AnalyzeM(const char *inputFile, const char *outputFile){
 	 GenJet_pt->GetBranch()->GetEntry(entry);
 	 GenJet_mass->GetBranch()->GetEntry(entry);
 
-	 Double_t VLCR05N4pair1Mass = 0;
-	 Double_t VLCR05N4pair2Mass = 0;
+	 VLCR05N4pair1Mass = 10000;
+	 VLCR05N4pair2Mass = 10000;
          
-	 Double_t AKTjetpair1Mass = 0;
-	 Double_t AKTjetpair2Mass = 0;
+	 AKTjetpair1Mass = 10000;
+	 AKTjetpair2Mass = 10000;
+         
+	 pair1jet1entry = 0;
+         pair1jet2entry = 0;
+         pair2jet1entry = 0;
+         pair2jet2entry = 0;
+
 //Pairing up Valencia Jets
 	 for(Int_t vlc1entry=0; vlc1entry < nVLCjet; vlc1entry++){
 	     for(Int_t vlc2entry=vlc1entry+1; vlc2entry < nVLCjet; vlc2entry++){
@@ -261,7 +273,12 @@ void AnalyzeM(const char *inputFile, const char *outputFile){
 	     cout << "the second jet pair in the "<<entry<< "th event failed check."<<endl;	 
          }*/
 //Pairing up Anti-kt jets
-	 if (nAKTjet >= 4) {
+         TLorentzVector AKTh1;
+         TLorentzVector AKTjet1;
+         TLorentzVector AKTjet2;
+         TLorentzVector AKTh2;
+
+	 if (nAKTjet == 4) {
              //Pairing up leading anti-KT jet pair
 	     for(Int_t akt1entry=0; akt1entry < nAKTjet; akt1entry++){
 	         for(Int_t akt2entry=akt1entry+1; akt2entry < nAKTjet; akt2entry++){
@@ -275,9 +292,6 @@ void AnalyzeM(const char *inputFile, const char *outputFile){
          	     AKT2mass = AKTjet_mass->GetValue(akt2entry);
 		     AKTjetpairmass = 0;
 
-                     TLorentzVector AKTh1;
-                     TLorentzVector AKTjet1;
-                     TLorentzVector AKTjet2;
 		     AKTjet1.SetPtEtaPhiM(AKT1pt, AKT1eta, AKT1phi,AKT1mass);
 		     AKTjet2.SetPtEtaPhiM(AKT2pt, AKT2eta, AKT2phi,AKT1mass);
 		     AKTh1=AKTjet1+AKTjet2;
@@ -292,13 +306,12 @@ void AnalyzeM(const char *inputFile, const char *outputFile){
 	         }  
 	     }
 //Pairing up sub-leading anti-KT jet pair
+             Int_t findflag = 0;
 	     for(Int_t akt1entry=0; akt1entry < nAKTjet; akt1entry++){
 	         if((akt1entry!=pair1jet1entry) and (akt1entry!=pair1jet2entry)){
-                     pair2jet1entry = akt1entry;
 		     for(Int_t akt2entry=0; akt2entry < nAKTjet; akt2entry++){
-		         if(((akt2entry!=pair1jet1entry) and (akt2entry!=pair1jet2entry)) and (akt2entry!=pair2jet1entry)){
-	                     pair2jet2entry = akt2entry;	     
- 
+		         if(((akt2entry!=pair1jet1entry) and (akt2entry!=pair1jet2entry)) and (akt2entry!=akt1entry)){
+			      
 			     AKT1eta = AKTjet_eta->GetValue(akt1entry);
          	             AKT1phi = AKTjet_phi->GetValue(akt1entry);
          	             AKT1pt = AKTjet_pt->GetValue(akt1entry);
@@ -309,23 +322,21 @@ void AnalyzeM(const char *inputFile, const char *outputFile){
          	             AKT2mass = AKTjet_mass->GetValue(akt2entry);
 		             AKTjetpairmass = 0;
 
-                             TLorentzVector AKTh2;
-                             TLorentzVector AKTjet1;
-                             TLorentzVector AKTjet2;
 		             AKTjet1.SetPtEtaPhiM(AKT1pt, AKT1eta, AKT1phi,AKT1mass);
 		             AKTjet2.SetPtEtaPhiM(AKT2pt, AKT2eta, AKT2phi,AKT1mass);
 		             AKTh2=AKTjet1+AKTjet2;
 		             AKTjetpairmass = AKTh2.Mag();
 		 
-		             if(abs(125 - AKTjetpairmass) < abs(125 -AKTjetpair2Mass)){
+		             if(abs(125 - AKTjetpairmass) < abs(125 - AKTjetpair2Mass)){
 		                 AKTjetpair2Mass = AKTjetpairmass;
-		                 pair2jet1entry = akt1entry;
+				 pair2jet1entry = akt1entry;
 		                 pair2jet2entry = akt2entry;
 		             }
 	                 }  
 	             }        
 	         }
 	     }
+
              AKT1eta = AKTjet_eta->GetValue(pair2jet1entry);
              AKT1phi = AKTjet_phi->GetValue(pair2jet1entry);
              AKT1pt = AKTjet_pt->GetValue(pair2jet1entry);
@@ -374,11 +385,7 @@ void AnalyzeM(const char *inputFile, const char *outputFile){
 	         }
              }
 	 
-             //Double_t VLCR05N4pair2Mass = 0;
-             TLorentzVector AKTh2;
-             TLorentzVector AKTjet1;
-             TLorentzVector AKTjet2;
- 	     AKTjet1.SetPtEtaPhiM(AKT1pt, AKT1eta, AKT1phi,AKT1mass);
+	     AKTjet1.SetPtEtaPhiM(AKT1pt, AKT1eta, AKT1phi,AKT1mass);
 	     AKTjet2.SetPtEtaPhiM(AKT2pt, AKT2eta, AKT2phi,AKT2mass);
 	     AKTh2=AKTjet1+AKTjet2;
 	     AKTjetpair2Mass = AKTh2.Mag();
@@ -492,4 +499,5 @@ void AnalyzeM(const char *inputFile, const char *outputFile){
      output->Close();
      file_sig->Close();
 }
+
 
