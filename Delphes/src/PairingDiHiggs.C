@@ -49,8 +49,8 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 
      Int_t nEntries = tree_sig->GetEntries();
 
-     TH1D *AKTjetMass1 = new TH1D("AKTjetMass1", "Anti_KTjet leading jets pair invariant mass", 50 , 0, 600); 
-     TH1D *AKTjetMass2 = new TH1D("AKTjetMass2", "Anti_KTjet sub-leading jets pair invariant mass", 50 , 0, 600); 
+     TH1D *AKTjetMass1 = new TH1D("AKTjetMass1", "Anti_KTjet leading jets pair invariant mass", 200 , 0, 600); 
+     TH1D *AKTjetMass2 = new TH1D("AKTjetMass2", "Anti_KTjet sub-leading jets pair invariant mass", 200 , 0, 600); 
      TH1D *GenAKTMass2 = new TH1D("GenAKTMass2", "GenAKTMass2", 100 , 0, 600); 
      TH1D *AKTGenMass2Comp = new TH1D("AKTGenMass2Comp", "AKTGenMass2Comp", 100 , -1.5, 1.5); 
      
@@ -263,9 +263,9 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	             jet1DeltaR = jet1DeltaRtmp;
 		     jet1entry = gen3entry;
 		     if (jet1DeltaR < 0.5){
-		         if (abs(Gen1eta) < 2.25){
+		         //if (abs(Gen1eta) < 2.25){
 		             AKT1jet1flag = true;
-		         }
+		         //}
 		     }
 	         }  
              }
@@ -278,9 +278,9 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	                 jet2DeltaR = jet2DeltaRtmp;
 		         jet2entry = gen4entry;
                          if (jet2DeltaR < 0.5){
-		             if (abs(Gen2eta) < 2.25){
+		             //if (abs(Gen2eta) < 2.25){
 		                 AKT1jet2flag = true;
-			     }
+			     //}
 		         }
 	             }
 	         }
@@ -296,9 +296,9 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	             jet1DeltaR = jet1DeltaRtmp;
 		     jet1entry = gen1entry;
 		     if (jet1DeltaR < 0.5){
-		         if (abs(Gen1eta) < 2.25){
+		         //if (abs(Gen1eta) < 2.25){
 		             AKT2jet1flag = true;
-		         }
+		         //}
 		     }
 	         }  
              }
@@ -311,9 +311,9 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	                 jet2DeltaR = jet2DeltaRtmp;
 		         jet2entry = gen2entry;
                          if (jet2DeltaR < 0.5){
-		             if (abs(Gen2eta) < 2.25){
+		             //if (abs(Gen2eta) < 2.25){
 		                 AKT2jet2flag = true;
-			     }
+			     //}
 		         }
 	             }
 	         }
@@ -354,9 +354,9 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      }
 //Fitting and plotting
      TF1 *jetpair1fit = new TF1("jetpair1fit", "gaus",10,200);
-     TF1 *jetpair2fit = new TF1("jetpair2fit", "gaus+expo(3)",20,600);
+     TF1 *jetpair2fit = new TF1("jetpair2fit", "gaus+expo(3)",25,600);
      TF1 *fSignal = new TF1("fSignal","gaus",20,600);
-     TF1 *fBackground = new TF1("fBackground","expo",20,600);
+     TF1 *fBackground = new TF1("fBackground","expo", 20,600);
      Double_t param[5];
 
      jetpair2fit->SetParameters(25,125,10,2,-0.0001);
