@@ -147,7 +147,7 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
          Double_t AKTjetpair[nAKTjet*(nAKTjet-1)/2][6];
 
          AKTjetpaircnt = 0;
-	 if (nAKTjet >= 4) {
+	 if (nAKTjet == 4) {
              //Pairing up leading anti-KT jet pair
 	     for(Int_t akt1entry=0; akt1entry < nAKTjet; akt1entry++){
 	         for(Int_t akt2entry=akt1entry+1; akt2entry < nAKTjet; akt2entry++){
@@ -353,24 +353,38 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	 //GenUncutMass2->Fill(GenJetMass);
      }
 //Fitting and plotting
-     TF1 *jetpair1fit = new TF1("jetpair1fit", "gaus",10,200);
-     TF1 *jetpair2fit = new TF1("jetpair2fit", "gaus+expo(3)",25,600);
-     TF1 *fSignal = new TF1("fSignal","gaus",20,600);
+     TF1 *jetpair1fit = new TF1("jetpair1fit", "gaus+gaus(3)",25,600);
+     TF1 *jetpair2fit = new TF1("jetpair2fit", "gaus+gaus(3)+expo(6)",25,600);
+     TF1 *fSignal = new TF1("fSignal","gaus+gaus(3)",20,600);
      TF1 *fBackground = new TF1("fBackground","expo", 20,600);
-     Double_t param[5];
+     Double_t param[8];
 
-     jetpair2fit->SetParameters(25,125,10,2,-0.0001);
-     jetpair2fit->SetParLimits(1,60,150);
-     jetpair2fit->SetParLimits(2,10,50);
-     jetpair2fit->SetParLimits(3,0,8);
-     jetpair2fit->SetParLimits(4,-1,-0.0001);
+     jetpair2fit->SetParameters(200,133,10,20,100,10,2,-0.0001);
+     jetpair2fit->SetParLimits(0,80,200);
+     jetpair2fit->SetParLimits(1,110,130);
+     jetpair2fit->SetParLimits(2,5,25);
+     jetpair2fit->SetParLimits(6,0,8);
+     jetpair2fit->SetParLimits(7,-1,-0.0001);
+     jetpair2fit->SetParLimits(4,50,109);
+     jetpair2fit->SetParLimits(5,5,30);
+     
+     jetpair1fit->SetParameters(300,120,10,40,125,10,2,-0.0001);
+     jetpair1fit->SetParLimits(0,100,400);
+     jetpair1fit->SetParLimits(1,110,120);
+     jetpair1fit->SetParLimits(2,5,30);
+     /*jetpair1fit->SetParLimits(6,0,8);
+     jetpair1fit->SetParLimits(7,-1.5,-0.0001);*/
+     jetpair1fit->SetParLimits(4,120,140);
+     jetpair1fit->SetParLimits(5,5,40);
+
+
 	     
      TCanvas *mycanvas = new TCanvas("mycanvas","My Canvas",200,10,600,480);
      cout <<endl<< "Run gaussian fit for the leading anti-KT jet pair..."<<endl;
-     AKTjetMass1->Fit("jetpair2fit","R");
-     jetpair2fit->GetParameters(param);
+     AKTjetMass1->Fit("jetpair1fit","R");
+     jetpair1fit->GetParameters(param);
      fSignal->SetParameters(&param[0]);
-     fBackground->SetParameters(&param[3]);
+     fBackground->SetParameters(&param[6]);
      TH1D *AKTjetMass1Signal = new TH1D(*AKTjetMass1);
      AKTjetMass1Signal->Sumw2();
      AKTjetMass1Signal->Add(fBackground,-1);
@@ -382,7 +396,7 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      AKTjetMass2->Fit("jetpair2fit","R");
      jetpair2fit->GetParameters(param);
      fSignal->SetParameters(&param[0]);
-     fBackground->SetParameters(&param[3]);
+     fBackground->SetParameters(&param[6]);
      TH1D *AKTjetMass2Signal = new TH1D(*AKTjetMass2);
      AKTjetMass2Signal->Sumw2();
      AKTjetMass2Signal->Add(fBackground,-1);
