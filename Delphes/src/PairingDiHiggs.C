@@ -147,7 +147,7 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
          Double_t AKTjetpair[nAKTjet*(nAKTjet-1)/2][6];
 
          AKTjetpaircnt = 0;
-	 if (nAKTjet == 4) {
+	 if (nAKTjet >= 4) {
              //Pairing up leading anti-KT jet pair
 	     for(Int_t akt1entry=0; akt1entry < nAKTjet; akt1entry++){
 	         for(Int_t akt2entry=akt1entry+1; akt2entry < nAKTjet; akt2entry++){
@@ -357,9 +357,11 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      TF1 *jetpair2fit = new TF1("jetpair2fit", "gaus+gaus(3)+expo(6)",25,600);
      TF1 *fSignal = new TF1("fSignal","gaus+gaus(3)",20,600);
      TF1 *fBackground = new TF1("fBackground","expo", 20,600);
+     TF1 *f1peak = new TF1("f1peak","gaus",20,600);
+     TF1 *f2peak = new TF1("f2peak","gaus",20,600);
      Double_t param[8];
 
-     jetpair2fit->SetParameters(200,133,10,20,100,10,2,-0.0001);
+     jetpair2fit->SetParameters(200,120,10,20,100,10,2,-0.0001);
      jetpair2fit->SetParLimits(0,80,200);
      jetpair2fit->SetParLimits(1,110,130);
      jetpair2fit->SetParLimits(2,5,25);
@@ -385,24 +387,32 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      jetpair1fit->GetParameters(param);
      fSignal->SetParameters(&param[0]);
      fBackground->SetParameters(&param[6]);
+     f1peak->SetParameters(&param[0]);
+     f2peak->SetParameters(&param[3]);
      TH1D *AKTjetMass1Signal = new TH1D(*AKTjetMass1);
      AKTjetMass1Signal->Sumw2();
      AKTjetMass1Signal->Add(fBackground,-1);
      AKTjetMass1->GetXaxis()->SetTitle("M [GeV]");
      AKTjetMass1->GetYaxis()->SetTitle("Events");
-     AKTjetMass1->Draw();fBackground->SetLineColor(4);fBackground->Draw("SAME"); 
+     AKTjetMass1->Draw();fBackground->SetLineColor(4);fBackground->Draw("SAME");
+     f1peak->SetLineColor(3);f1peak->Draw("SAME");
+     f2peak->SetLineColor(6);f2peak->Draw("SAME");
      mycanvas->SaveAs("AKTjetpair1Mass.png");
 
      AKTjetMass2->Fit("jetpair2fit","R");
      jetpair2fit->GetParameters(param);
      fSignal->SetParameters(&param[0]);
      fBackground->SetParameters(&param[6]);
+     f1peak->SetParameters(&param[0]);
+     f2peak->SetParameters(&param[3]);
      TH1D *AKTjetMass2Signal = new TH1D(*AKTjetMass2);
      AKTjetMass2Signal->Sumw2();
      AKTjetMass2Signal->Add(fBackground,-1);
      AKTjetMass2->GetXaxis()->SetTitle("M [GeV]");
      AKTjetMass2->GetYaxis()->SetTitle("Events");
      AKTjetMass2->Draw();fBackground->SetLineColor(4);fBackground->Draw("SAME"); 
+     f1peak->SetLineColor(3);f1peak->Draw("SAME");
+     f2peak->SetLineColor(6);f2peak->Draw("SAME");
      //AKTjetMass2Signal->Draw("SAME"); fSignal->Draw("SAME");
      mycanvas->SaveAs("AKTjetpair2Mass.png");
      cout <<endl<< "Run gaussian fit for the sub-leading GenJet pair under selection of AKT..."<<endl;
