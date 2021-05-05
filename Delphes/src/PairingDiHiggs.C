@@ -52,8 +52,8 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      TH1D *AKTjetMass1 = new TH1D("AKTjetMass1", "Anti_KTjet leading jets pair invariant mass", 200 , 0, 600); 
      TH1D *AKTjetMass2 = new TH1D("AKTjetMass2", "Anti_KTjet sub-leading jets pair invariant mass", 200 , 0, 600); 
      TH1D *GenAKTMass2 = new TH1D("GenAKTMass2", "GenAKTMass2", 100 , 0, 600); 
-     TH1D *AKTGenMass2Comp = new TH1D("AKTGenMass2Comp", "AKTGenMass2Comp", 100 , -1.5, 1.5); 
-     
+     TH1D *AKTGenMass1Comp = new TH1D("AKTGenMass2Comp", "AKTGenMass2Comp", 200 , -1, 1); 
+     TH1D *AKTGenMass2Comp = new TH1D("AKTGenMass2Comp", "AKTGenMass2Comp", 200 , -1, 1); 
      TH1D *GenUncutMass2 = new TH1D("GenUncutMass2", "GenUncutMass2", 100 , 0, 600); 
  
      Double_t AKTjet1eta1;
@@ -83,6 +83,17 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      Double_t Gen1mass;
      Double_t Gen2mass;
 
+     Double_t Gen3eta;
+     Double_t Gen3phi;
+     Double_t Gen4eta;
+     Double_t Gen4phi;
+     Double_t Gen3pt;
+     Double_t Gen4pt;
+     Double_t Gen3mass;
+     Double_t Gen4mass;
+
+
+
      Int_t pair1jet1entry;
      Int_t pair1jet2entry;
      Int_t pair2jet1entry;
@@ -107,6 +118,8 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      TLorentzVector Genh2;
      TLorentzVector GenJet1;
      TLorentzVector GenJet2;
+     TLorentzVector GenJet3;
+     TLorentzVector GenJet4;
 
      cout << "Running Pairing up Algo..." << endl;
 //run over event entries
@@ -254,32 +267,34 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 
 	     Int_t jet1entry;
 	     Int_t jet2entry;
+	     Int_t jet3entry;
+	     Int_t jet4entry;
 //Truth matching for anti-KT jets
-             for(Int_t gen3entry=0; gen3entry < nGenJet; gen3entry++){
-  	         Gen1eta = GenJet_eta->GetValue(gen3entry);
-	         Gen1phi = GenJet_phi->GetValue(gen3entry);
+             for(Int_t gen1entry=0; gen1entry < nGenJet; gen1entry++){
+  	         Gen1eta = GenJet_eta->GetValue(gen1entry);
+	         Gen1phi = GenJet_phi->GetValue(gen1entry);
 	         Float_t jet1DeltaRtmp = TMath::Sqrt(pow((AKTjet1eta1-Gen1eta),2)+pow((AKTjet1phi1-Gen1phi),2));
 	         if(jet1DeltaRtmp < jet1DeltaR){
 	             jet1DeltaR = jet1DeltaRtmp;
-		     jet1entry = gen3entry;
 		     if (jet1DeltaR < 0.5){
 		         //if (abs(Gen1eta) < 2.25){
 		             AKT1jet1flag = true;
+		             jet1entry = gen1entry;
 		         //}
 		     }
 	         }  
              }
-             for(Int_t gen4entry=0; gen4entry < nGenJet; gen4entry++){
-  	         Gen2eta = GenJet_eta->GetValue(gen4entry);
-	         Gen2phi = GenJet_phi->GetValue(gen4entry);
+             for(Int_t gen2entry=0; gen2entry < nGenJet; gen2entry++){
+  	         Gen2eta = GenJet_eta->GetValue(gen2entry);
+	         Gen2phi = GenJet_phi->GetValue(gen2entry);
 	         Float_t jet2DeltaRtmp = TMath::Sqrt(pow((AKTjet1eta2-Gen2eta),2)+pow((AKTjet1phi2-Gen2phi),2));
-	         if (gen4entry != jet1entry){
+	         if (gen2entry != jet1entry){
                      if(jet2DeltaRtmp < jet2DeltaR){
 	                 jet2DeltaR = jet2DeltaRtmp;
-		         jet2entry = gen4entry;
                          if (jet2DeltaR < 0.5){
 		             //if (abs(Gen2eta) < 2.25){
 		                 AKT1jet2flag = true;
+		                 jet2entry = gen2entry;
 			     //}
 		         }
 	             }
@@ -288,31 +303,31 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
              jet1DeltaR = 100;
              jet2DeltaR = 100;
 
-	     for(Int_t gen1entry=0; gen1entry < nGenJet; gen1entry++){
-  	         Gen1eta = GenJet_eta->GetValue(gen1entry);
-	         Gen1phi = GenJet_phi->GetValue(gen1entry);
-	         Float_t jet1DeltaRtmp = TMath::Sqrt(pow((AKTjet2eta1-Gen1eta),2)+pow((AKTjet2phi1-Gen1phi),2));
+	     for(Int_t gen3entry=0; gen3entry < nGenJet; gen3entry++){
+  	         Gen3eta = GenJet_eta->GetValue(gen3entry);
+	         Gen3phi = GenJet_phi->GetValue(gen3entry);
+	         Float_t jet1DeltaRtmp = TMath::Sqrt(pow((AKTjet2eta1-Gen3eta),2)+pow((AKTjet2phi1-Gen3phi),2));
 	         if(jet1DeltaRtmp < jet1DeltaR){
 	             jet1DeltaR = jet1DeltaRtmp;
-		     jet1entry = gen1entry;
 		     if (jet1DeltaR < 0.5){
 		         //if (abs(Gen1eta) < 2.25){
 		             AKT2jet1flag = true;
+		             jet3entry = gen3entry;
 		         //}
 		     }
 	         }  
              }
-             for(Int_t gen2entry=0; gen2entry < nGenJet; gen2entry++){
-  	         Gen2eta = GenJet_eta->GetValue(gen2entry);
-	         Gen2phi = GenJet_phi->GetValue(gen2entry);
-	         Float_t jet2DeltaRtmp = TMath::Sqrt(pow((AKTjet2eta2-Gen2eta),2)+pow((AKTjet2phi2-Gen2phi),2));
-	         if (gen2entry != jet1entry){
+             for(Int_t gen4entry=0; gen4entry < nGenJet; gen4entry++){
+  	         Gen4eta = GenJet_eta->GetValue(gen4entry);
+	         Gen4phi = GenJet_phi->GetValue(gen4entry);
+	         Float_t jet2DeltaRtmp = TMath::Sqrt(pow((AKTjet2eta2-Gen4eta),2)+pow((AKTjet2phi2-Gen4phi),2));
+	         if (gen4entry != jet1entry){
                      if(jet2DeltaRtmp < jet2DeltaR){
 	                 jet2DeltaR = jet2DeltaRtmp;
-		         jet2entry = gen2entry;
                          if (jet2DeltaR < 0.5){
 		             //if (abs(Gen2eta) < 2.25){
 		                 AKT2jet2flag = true;
+		                 jet4entry = gen4entry;
 			     //}
 		         }
 	             }
@@ -321,8 +336,10 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	     
 	     if (AKTjetpair1Mass < AKTjetpair2Mass) {
 	         swap(AKTjetpair1Mass, AKTjetpair2Mass);
+		 swap(jet1entry,jet3entry);
+		 swap(jet2entry,jet4entry);
 	     }
-	     /* 
+	      
              Gen1eta = GenJet_eta->GetValue(jet1entry);
              Gen1phi = GenJet_phi->GetValue(jet1entry);
              Gen1pt = GenJet_pt->GetValue(jet1entry);
@@ -336,15 +353,31 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	     GenJet2.SetPtEtaPhiM(Gen2pt, Gen2eta, Gen2phi,Gen2mass);
 	     Genh2=GenJet1+GenJet2;
 	     GenJetMass = Genh2.Mag();
-             Double_t AKTGendiff = (AKTjetpair2Mass-GenJetMass)/GenJetMass;
-	     */
+             Double_t AKTGen1diff = (GenJetMass - AKTjetpair2Mass)/GenJetMass;
+
+	     Gen3eta = GenJet_eta->GetValue(jet3entry);
+             Gen3phi = GenJet_phi->GetValue(jet3entry);
+             Gen3pt = GenJet_pt->GetValue(jet3entry);
+             Gen3mass = GenJet_mass->GetValue(jet3entry);
+             Gen4eta = GenJet_eta->GetValue(jet4entry);
+             Gen4phi = GenJet_phi->GetValue(jet4entry);
+             Gen4pt = GenJet_pt->GetValue(jet4entry);
+             Gen4mass = GenJet_mass->GetValue(jet4entry);
+         
+	     GenJet3.SetPtEtaPhiM(Gen3pt, Gen3eta, Gen3phi,Gen3mass);
+	     GenJet4.SetPtEtaPhiM(Gen4pt, Gen4eta, Gen4phi,Gen4mass);
+	     Genh2=GenJet3+GenJet4;
+	     GenJetMass = Genh2.Mag();
+             Double_t AKTGen2diff = (GenJetMass - AKTjetpair2Mass)/GenJetMass;
+
 	 
              if (AKT1jet1flag==true and AKT1jet2flag==true and AKT2jet1flag==true and AKT2jet2flag==true){
 	         
 		 AKTjetMass1->Fill(AKTjetpair1Mass);
                  AKTjetMass2->Fill(AKTjetpair2Mass);
 		 //GenAKTMass2->Fill(GenJetMass);
-	         //AKTGenMass2Comp->Fill(AKTGendiff);
+	         AKTGenMass1Comp->Fill(AKTGen1diff);
+	         AKTGenMass2Comp->Fill(AKTGen2diff);
 	     } 
              //AKTjetMass1->Fill(AKTjetpair1Mass);
              //AKTjetMass2->Fill(AKTjetpair2Mass);
@@ -422,16 +455,20 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      cout <<endl<< "Run gaussian fit for the sub-leading GenJet pair (Uncut)..."<<endl;
      //GenUncutMass2->Fit("jetpair2fit","R");
      //mycanvas->SaveAs("GenUncutMass2.png");
+     
+     AKTGenMass1Comp->Draw();
+     mycanvas->SaveAs("AKTGenMass1Comp.png");
 
-     //AKTGenMass2Comp->Draw();
-     //mycanvas->SaveAs("AKTGenMass2Comp.png");
+     AKTGenMass2Comp->Draw();
+     mycanvas->SaveAs("AKTGenMass2Comp.png");
 
      cout <<endl<< "Output in TTree..."<<endl;
 
      AKTjetMass1->Write();
      AKTjetMass2->Write();
      //GenAKTMass2->Write();
-     //AKTGenMass2Comp->Write();
+     AKTGenMass1Comp->Write();
+     AKTGenMass2Comp->Write();
      //GenUncutMass2->Write();
 
      tree_output->Write();
