@@ -52,7 +52,7 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      TH1D *AKTjetMass1 = new TH1D("AKTjetMass1", "Anti_KTjet leading jets pair invariant mass", 200 , 0, 600); 
      TH1D *AKTjetMass2 = new TH1D("AKTjetMass2", "Anti_KTjet sub-leading jets pair invariant mass", 200 , 0, 600); 
      TH1D *GenAKTMass2 = new TH1D("GenAKTMass2", "GenAKTMass2", 100 , 0, 600); 
-     TH1D *AKTGenMass1Comp = new TH1D("AKTGenMass2Comp", "AKTGenMass2Comp", 200 , -1, 1); 
+     TH1D *AKTGenMass1Comp = new TH1D("AKTGenMass1Comp", "AKTGenMass1Comp", 200 , -1, 1); 
      TH1D *AKTGenMass2Comp = new TH1D("AKTGenMass2Comp", "AKTGenMass2Comp", 200 , -1, 1); 
      TH1D *GenUncutMass2 = new TH1D("GenUncutMass2", "GenUncutMass2", 100 , 0, 600); 
  
@@ -353,7 +353,7 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	     GenJet2.SetPtEtaPhiM(Gen2pt, Gen2eta, Gen2phi,Gen2mass);
 	     Genh2=GenJet1+GenJet2;
 	     GenJetMass = Genh2.Mag();
-             Double_t AKTGen1diff = (GenJetMass - AKTjetpair2Mass)/GenJetMass;
+             Double_t AKTGen1diff = (AKTjetpair1Mass - GenJetMass)/GenJetMass;
 
 	     Gen3eta = GenJet_eta->GetValue(jet3entry);
              Gen3phi = GenJet_phi->GetValue(jet3entry);
@@ -368,7 +368,7 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	     GenJet4.SetPtEtaPhiM(Gen4pt, Gen4eta, Gen4phi,Gen4mass);
 	     Genh2=GenJet3+GenJet4;
 	     GenJetMass = Genh2.Mag();
-             Double_t AKTGen2diff = (GenJetMass - AKTjetpair2Mass)/GenJetMass;
+             Double_t AKTGen2diff = (AKTjetpair2Mass - GenJetMass)/GenJetMass;
 
 	 
              if (AKT1jet1flag==true and AKT1jet2flag==true and AKT2jet1flag==true and AKT2jet2flag==true){
@@ -456,8 +456,14 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      //GenUncutMass2->Fit("jetpair2fit","R");
      //mycanvas->SaveAs("GenUncutMass2.png");
      
+     AKTGenMass1Comp->GetXaxis()->SetTitle("(E_{AKT1}-E_{Gen})/E_{Gen}");
+     AKTGenMass1Comp->GetYaxis()->SetTitle("Events");
+
      AKTGenMass1Comp->Draw();
      mycanvas->SaveAs("AKTGenMass1Comp.png");
+     
+     AKTGenMass2Comp->GetXaxis()->SetTitle("(E_{AKT2}-E_{Gen})/E_{Gen}");
+     AKTGenMass2Comp->GetYaxis()->SetTitle("Events");
 
      AKTGenMass2Comp->Draw();
      mycanvas->SaveAs("AKTGenMass2Comp.png");
