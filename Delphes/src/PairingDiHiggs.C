@@ -52,10 +52,15 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      TH1D *AKTjetMass1 = new TH1D("AKTjetMass1", "Anti_KTjet leading jets pair invariant mass", 200 , 0, 600); 
      TH1D *AKTjetMass2 = new TH1D("AKTjetMass2", "Anti_KTjet sub-leading jets pair invariant mass", 200 , 0, 600); 
      TH1D *GenAKTMass2 = new TH1D("GenAKTMass2", "GenAKTMass2", 100 , 0, 600); 
-     TH1D *AKTGenMass1Comp = new TH1D("AKTGenMass1Comp", "AKTGenMass1Comp", 200 , -1, 1); 
-     TH1D *AKTGenMass2Comp = new TH1D("AKTGenMass2Comp", "AKTGenMass2Comp", 200 , -1, 1); 
+     TH1D *AKTGenMass1Comp = new TH1D("AKTGenMass1Comp", "AKTGenMass1Comp", 200 , -1, 2); 
+     TH1D *AKTGenMass2Comp = new TH1D("AKTGenMass2Comp", "AKTGenMass2Comp", 200 , -1, 2); 
      TH1D *GenUncutMass2 = new TH1D("GenUncutMass2", "GenUncutMass2", 100 , 0, 600); 
  
+     TH1D *AKTGenPt1Comp = new TH1D("AKTGenPt1Comp", "AKTGenPt1Comp", 200 , -1, 7); 
+     TH1D *AKTGenPt2Comp = new TH1D("AKTGenPt2Comp", "AKTGenPt2Comp", 200 , -1, 2); 
+     TH1D *AKTGenPt3Comp = new TH1D("AKTGenPt3Comp", "AKTGenPt3Comp", 200 , -1, 16); 
+     TH1D *AKTGenPt4Comp = new TH1D("AKTGenPt4Comp", "AKTGenPt4Comp", 200 , -1, 17); 
+
      Double_t AKTjet1eta1;
      Double_t AKTjet1phi1;
      Double_t AKTjet1pt1;
@@ -353,7 +358,7 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	     GenJet2.SetPtEtaPhiM(Gen2pt, Gen2eta, Gen2phi,Gen2mass);
 	     Genh2=GenJet1+GenJet2;
 	     GenJetMass = Genh2.Mag();
-             Double_t AKTGen1diff = (AKTjetpair1Mass - GenJetMass)/GenJetMass;
+             Double_t AKTGenMass1diff = (AKTjetpair1Mass - GenJetMass)/GenJetMass;
 
 	     Gen3eta = GenJet_eta->GetValue(jet3entry);
              Gen3phi = GenJet_phi->GetValue(jet3entry);
@@ -368,16 +373,24 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	     GenJet4.SetPtEtaPhiM(Gen4pt, Gen4eta, Gen4phi,Gen4mass);
 	     Genh2=GenJet3+GenJet4;
 	     GenJetMass = Genh2.Mag();
-             Double_t AKTGen2diff = (AKTjetpair2Mass - GenJetMass)/GenJetMass;
+             Double_t AKTGenMass2diff = (AKTjetpair2Mass - GenJetMass)/GenJetMass;
 
-	 
+	     Double_t AKTGenPt1diff = (AKTjet1pt1 - Gen1pt)/Gen1pt;
+	     Double_t AKTGenPt2diff = (AKTjet1pt2 - Gen2pt)/Gen2pt;
+	     Double_t AKTGenPt3diff = (AKTjet2pt1 - Gen3pt)/Gen3pt;
+	     Double_t AKTGenPt4diff = (AKTjet2pt2 - Gen4pt)/Gen4pt;
+
              if (AKT1jet1flag==true and AKT1jet2flag==true and AKT2jet1flag==true and AKT2jet2flag==true){
 	         
 		 AKTjetMass1->Fill(AKTjetpair1Mass);
                  AKTjetMass2->Fill(AKTjetpair2Mass);
 		 //GenAKTMass2->Fill(GenJetMass);
-	         AKTGenMass1Comp->Fill(AKTGen1diff);
-	         AKTGenMass2Comp->Fill(AKTGen2diff);
+	         AKTGenMass1Comp->Fill(AKTGenMass1diff);
+	         AKTGenMass2Comp->Fill(AKTGenMass2diff);
+		 AKTGenPt1Comp->Fill(AKTGenPt1diff);
+		 AKTGenPt2Comp->Fill(AKTGenPt2diff);
+		 AKTGenPt3Comp->Fill(AKTGenPt3diff);
+		 AKTGenPt4Comp->Fill(AKTGenPt4diff);
 	     } 
              //AKTjetMass1->Fill(AKTjetpair1Mass);
              //AKTjetMass2->Fill(AKTjetpair2Mass);
@@ -456,18 +469,43 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      //GenUncutMass2->Fit("jetpair2fit","R");
      //mycanvas->SaveAs("GenUncutMass2.png");
      
-     AKTGenMass1Comp->GetXaxis()->SetTitle("(E_{AKT1}-E_{Gen})/E_{Gen}");
+     AKTGenMass1Comp->GetXaxis()->SetTitle("(M_{H1}-M_{Gen})/M_{Gen}");
      AKTGenMass1Comp->GetYaxis()->SetTitle("Events");
 
      AKTGenMass1Comp->Draw();
      mycanvas->SaveAs("AKTGenMass1Comp.png");
      
-     AKTGenMass2Comp->GetXaxis()->SetTitle("(E_{AKT2}-E_{Gen})/E_{Gen}");
+     AKTGenMass2Comp->GetXaxis()->SetTitle("(M_{H2}-M_{Gen})/M_{Gen}");
      AKTGenMass2Comp->GetYaxis()->SetTitle("Events");
 
      AKTGenMass2Comp->Draw();
      mycanvas->SaveAs("AKTGenMass2Comp.png");
 
+     AKTGenPt1Comp->GetXaxis()->SetTitle("(P_{T_1}-P_{T_{Gen1}})/P_{T_{Gen1}}");
+     AKTGenPt1Comp->GetYaxis()->SetTitle("Events");
+
+     AKTGenPt1Comp->Draw();
+     mycanvas->SaveAs("AKTGenPt1Comp.png");
+ 
+     AKTGenPt2Comp->GetXaxis()->SetTitle("(P_{T_2}-P_{T_{Gen2}})/P_{T_{Gen2}}");
+     AKTGenPt2Comp->GetYaxis()->SetTitle("Events");
+
+     AKTGenPt2Comp->Draw();
+     mycanvas->SaveAs("AKTGenPt2Comp.png");
+ 
+     AKTGenPt3Comp->GetXaxis()->SetTitle("(P_{T_3}-P_{T_{Gen3}})/P_{T_{Gen3}}");
+     AKTGenPt3Comp->GetYaxis()->SetTitle("Events");
+
+     AKTGenPt3Comp->Draw();
+     mycanvas->SaveAs("AKTGenPt3Comp.png");
+ 
+     AKTGenPt4Comp->GetXaxis()->SetTitle("(P_{T_4}-P_{T_{Gen4}})/P_{T_{Gen4}}");
+     AKTGenPt4Comp->GetYaxis()->SetTitle("Events");
+
+     AKTGenPt4Comp->Draw();
+     mycanvas->SaveAs("AKTGenPt4Comp.png");
+         
+    
      cout <<endl<< "Output in TTree..."<<endl;
 
      AKTjetMass1->Write();
@@ -476,6 +514,10 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      AKTGenMass1Comp->Write();
      AKTGenMass2Comp->Write();
      //GenUncutMass2->Write();
+     AKTGenPt1Comp->Write();
+     AKTGenPt2Comp->Write();
+     AKTGenPt3Comp->Write();
+     AKTGenPt4Comp->Write();
 
      tree_output->Write();
 
