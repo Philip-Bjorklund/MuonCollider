@@ -49,17 +49,17 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 
      Int_t nEntries = tree_sig->GetEntries();
 
-     TH1D *AKTjetMass1 = new TH1D("AKTjetMass1", "Anti_KTjet leading jets pair invariant mass", 200 , 0, 600); 
-     TH1D *AKTjetMass2 = new TH1D("AKTjetMass2", "Anti_KTjet sub-leading jets pair invariant mass", 200 , 0, 600); 
+     TH1D *AKTjetMass1 = new TH1D("AKTjetMass1", "Anti_KTjet leading jets pair invariant mass", 150 , 0, 400); 
+     TH1D *AKTjetMass2 = new TH1D("AKTjetMass2", "Anti_KTjet sub-leading jets pair invariant mass", 150 , 0, 400); 
      TH1D *GenAKTMass2 = new TH1D("GenAKTMass2", "GenAKTMass2", 100 , 0, 600); 
      TH1D *AKTGenMass1Comp = new TH1D("AKTGenMass1Comp", "AKTGenMass1Comp", 200 , -1, 2); 
      TH1D *AKTGenMass2Comp = new TH1D("AKTGenMass2Comp", "AKTGenMass2Comp", 200 , -1, 2); 
      TH1D *GenUncutMass2 = new TH1D("GenUncutMass2", "GenUncutMass2", 100 , 0, 600); 
  
-     TH1D *AKTGenPt1Comp = new TH1D("AKTGenPt1Comp", "AKTGenPt1Comp", 200 , -1, 7); 
-     TH1D *AKTGenPt2Comp = new TH1D("AKTGenPt2Comp", "AKTGenPt2Comp", 200 , -1, 2); 
-     TH1D *AKTGenPt3Comp = new TH1D("AKTGenPt3Comp", "AKTGenPt3Comp", 200 , -1, 16); 
-     TH1D *AKTGenPt4Comp = new TH1D("AKTGenPt4Comp", "AKTGenPt4Comp", 200 , -1, 17); 
+     TH1D *AKTGenPt1Comp = new TH1D("AKTGenPt1Comp", "AKTGenPt1Comp", 200 , -1, 9); 
+     TH1D *AKTGenPt2Comp = new TH1D("AKTGenPt2Comp", "AKTGenPt2Comp", 200 , -1, 9); 
+     TH1D *AKTGenPt3Comp = new TH1D("AKTGenPt3Comp", "AKTGenPt3Comp", 200 , -1, 9); 
+     TH1D *AKTGenPt4Comp = new TH1D("AKTGenPt4Comp", "AKTGenPt4Comp", 200 , -1, 2); 
 
      Double_t AKTjet1eta1;
      Double_t AKTjet1phi1;
@@ -374,23 +374,38 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	     Genh2=GenJet3+GenJet4;
 	     GenJetMass = Genh2.Mag();
              Double_t AKTGenMass2diff = (AKTjetpair2Mass - GenJetMass)/GenJetMass;
-
-	     Double_t AKTGenPt1diff = (AKTjet1pt1 - Gen1pt)/Gen1pt;
-	     Double_t AKTGenPt2diff = (AKTjet1pt2 - Gen2pt)/Gen2pt;
-	     Double_t AKTGenPt3diff = (AKTjet2pt1 - Gen3pt)/Gen3pt;
-	     Double_t AKTGenPt4diff = (AKTjet2pt2 - Gen4pt)/Gen4pt;
+             
+	     Double_t AKTpt[] = { AKTjet1pt1, AKTjet1pt2, AKTjet2pt1, AKTjet2pt2 };
+	     int AKTsize = sizeof(AKTpt) / sizeof(AKTpt[0]);
+             
+	     Double_t Genpt[] = { Gen1pt, Gen2pt, Gen3pt, Gen4pt };
+	     int Gensize = sizeof(Genpt) / sizeof(Genpt[0]);
+              
+	     for (int i=0; i<4; i++) {
+	         for (int j=i+1; j<4; j++) {
+		     if (AKTpt[j] > AKTpt[i]) {
+                         swap(AKTpt[j], AKTpt[i]);
+			 swap(Genpt[j], Genpt[i]);
+		     }
+		 }
+	     }
+	     Double_t AKTGenPt1diff = (AKTpt[0] - Genpt[0])/Genpt[0];
+	     Double_t AKTGenPt2diff = (AKTpt[1] - Genpt[1])/Genpt[1];
+	     Double_t AKTGenPt3diff = (AKTpt[2] - Genpt[2])/Genpt[2];
+	     Double_t AKTGenPt4diff = (AKTpt[3] - Genpt[3])/Genpt[3];
 
              if (AKT1jet1flag==true and AKT1jet2flag==true and AKT2jet1flag==true and AKT2jet2flag==true){
-	         
-		 AKTjetMass1->Fill(AKTjetpair1Mass);
-                 AKTjetMass2->Fill(AKTjetpair2Mass);
-		 //GenAKTMass2->Fill(GenJetMass);
-	         AKTGenMass1Comp->Fill(AKTGenMass1diff);
-	         AKTGenMass2Comp->Fill(AKTGenMass2diff);
-		 AKTGenPt1Comp->Fill(AKTGenPt1diff);
+	         AKTGenPt1Comp->Fill(AKTGenPt1diff);
 		 AKTGenPt2Comp->Fill(AKTGenPt2diff);
 		 AKTGenPt3Comp->Fill(AKTGenPt3diff);
 		 AKTGenPt4Comp->Fill(AKTGenPt4diff);
+	         if (abs(AKTGenPt1diff)<0.15 and abs(AKTGenPt2diff)<0.15 and abs(AKTGenPt3diff)<0.15 and abs(AKTGenPt4diff)<0.15) { 
+		     AKTjetMass1->Fill(AKTjetpair1Mass);
+                     AKTjetMass2->Fill(AKTjetpair2Mass);
+		     //GenAKTMass2->Fill(GenJetMass);
+	             AKTGenMass1Comp->Fill(AKTGenMass1diff);
+	             AKTGenMass2Comp->Fill(AKTGenMass2diff);
+		 }
 	     } 
              //AKTjetMass1->Fill(AKTjetpair1Mass);
              //AKTjetMass2->Fill(AKTjetpair2Mass);
@@ -402,28 +417,28 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      TF1 *jetpair1fit = new TF1("jetpair1fit", "[0]*exp(-0.5*((x-[1])/[2])^2)+[3]*exp(-0.5*((x-[1])/[4])^2)",25,600);
      TF1 *jetpair2fit = new TF1("jetpair2fit", "[0]*exp(-0.5*((x-[1])/[2])^2)+[3]*exp(-0.5*((x-[1])/[4])^2)+expo(5)",25,600);
      TF1 *fSignal = new TF1("fSignal","gaus+gaus(3)",20,600);
-     TF1 *fBackground = new TF1("fBackground","expo", 20,600);
+     TF1 *fBackground = new TF1("fBackground","expo",20,600);
      TF1 *f1peak = new TF1("f1peak","gaus",20,600);
      TF1 *f2peak = new TF1("f2peak","gaus",20,600);
      Double_t param[8];
 
      jetpair2fit->SetParameters(200,120,10,20,10,2,-0.0001);
-     jetpair2fit->SetParLimits(0,80,200);
+     jetpair2fit->SetParLimits(0,30,100);
      jetpair2fit->SetParLimits(1,100,140);
-     jetpair2fit->SetParLimits(2,5,40);
-     jetpair2fit->SetParLimits(5,0,8);
+     jetpair2fit->SetParLimits(2,10,30);
+     jetpair2fit->SetParLimits(5,0,20);
      jetpair2fit->SetParLimits(6,-1,-0.0001);
      //jetpair2fit->SetParLimits(4,50,109);
-     jetpair2fit->SetParLimits(3,0,40);
-     jetpair2fit->SetParLimits(4,0,30);
+     jetpair2fit->SetParLimits(3,10,50);
+     jetpair2fit->SetParLimits(4,0,10);
      
      jetpair1fit->SetParameters(300,120,10,40,20);
-     jetpair1fit->SetParLimits(0,100,400);
+     jetpair1fit->SetParLimits(0,50,350);
      jetpair1fit->SetParLimits(1,100,140);
      jetpair1fit->SetParLimits(2,5,30);
      /*jetpair1fit->SetParLimits(6,0,8);
      jetpair1fit->SetParLimits(7,-1.5,-0.0001);*/
-     //jetpair1fit->SetParLimits(4,120,140);
+     jetpair1fit->SetParLimits(3,0,60);
      jetpair1fit->SetParLimits(4,5,40);
 
 
