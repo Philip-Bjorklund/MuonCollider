@@ -380,7 +380,7 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
              
 	     Double_t Genpt[] = { Gen1pt, Gen2pt, Gen3pt, Gen4pt };
 	     int Gensize = sizeof(Genpt) / sizeof(Genpt[0]);
-              
+             //sort pt 
 	     for (int i=0; i<4; i++) {
 	         for (int j=i+1; j<4; j++) {
 		     if (AKTpt[j] > AKTpt[i]) {
@@ -389,6 +389,7 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 		     }
 		 }
 	     }
+	     //calculate resolution
 	     Double_t AKTGenPt1diff = (AKTpt[0] - Genpt[0])/Genpt[0];
 	     Double_t AKTGenPt2diff = (AKTpt[1] - Genpt[1])/Genpt[1];
 	     Double_t AKTGenPt3diff = (AKTpt[2] - Genpt[2])/Genpt[2];
