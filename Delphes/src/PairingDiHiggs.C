@@ -565,43 +565,43 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      AKTGenPt4Comp->Draw();
      mycanvas->SaveAs("AKTGenPt4Comp.png");
       
-     jet1Reso_Pt->GetXaxis()->SetTitle("P_T [GeV]");
-     jet1Reso_Pt->GetYaxis()->SetTitle("Resolution (P_T)");
+     jet1Reso_Pt->GetXaxis()->SetTitle("P_{T} [GeV]");
+     jet1Reso_Pt->GetYaxis()->SetTitle("Resolution (P_{T})");
      jet1Reso_Pt->Draw("COL");
      mycanvas->SaveAs("jet1Reso_Pt.png");
      
-     jet2Reso_Pt->GetXaxis()->SetTitle("P_T [GeV]");
-     jet2Reso_Pt->GetYaxis()->SetTitle("Resolution (P_T)");
+     jet2Reso_Pt->GetXaxis()->SetTitle("P_{T} [GeV]");
+     jet2Reso_Pt->GetYaxis()->SetTitle("Resolution (P_{T})");
      jet2Reso_Pt->Draw("COL");
      mycanvas->SaveAs("jet2Reso_Pt.png");
 
-     jet3Reso_Pt->GetXaxis()->SetTitle("P_T [GeV]");
-     jet3Reso_Pt->GetYaxis()->SetTitle("Resolution (P_T)");
+     jet3Reso_Pt->GetXaxis()->SetTitle("P_{T} [GeV]");
+     jet3Reso_Pt->GetYaxis()->SetTitle("Resolution (P_{T})");
      jet3Reso_Pt->Draw("COL");
      mycanvas->SaveAs("jet3Reso_Pt.png");
  
-     jet4Reso_Pt->GetXaxis()->SetTitle("P_T [GeV]");
-     jet4Reso_Pt->GetYaxis()->SetTitle("Resolution (P_T)");
+     jet4Reso_Pt->GetXaxis()->SetTitle("P_{T} [GeV]");
+     jet4Reso_Pt->GetYaxis()->SetTitle("Resolution (P_{T})");
      jet4Reso_Pt->Draw("COL");
      mycanvas->SaveAs("jet4Reso_Pt.png");
      
      jet1Reso_DeltaR->GetXaxis()->SetTitle("#Delta_{R}");
-     jet1Reso_DeltaR->GetYaxis()->SetTitle("Resolution (P_T)");   
+     jet1Reso_DeltaR->GetYaxis()->SetTitle("Resolution (P_{T})");   
      jet1Reso_DeltaR->Draw("COL");
      mycanvas->SaveAs("jet1Reso_DeltaR.png");
  
      jet2Reso_DeltaR->GetXaxis()->SetTitle("#Delta_{R}");
-     jet2Reso_DeltaR->GetYaxis()->SetTitle("Resolution (P_T)"); 
+     jet2Reso_DeltaR->GetYaxis()->SetTitle("Resolution (P_{T})"); 
      jet2Reso_DeltaR->Draw("COL");
      mycanvas->SaveAs("jet2Reso_DeltaR.png");
 
      jet3Reso_DeltaR->GetXaxis()->SetTitle("#Delta_{R}");
-     jet3Reso_DeltaR->GetYaxis()->SetTitle("Resolution (P_T)"); 
+     jet3Reso_DeltaR->GetYaxis()->SetTitle("Resolution (P_{T})"); 
      jet3Reso_DeltaR->Draw("COL");
      mycanvas->SaveAs("jet3Reso_DeltaR.png");
 
      jet4Reso_DeltaR->GetXaxis()->SetTitle("#Delta_{R}");
-     jet4Reso_DeltaR->GetYaxis()->SetTitle("Resolution (P_T)");     
+     jet4Reso_DeltaR->GetYaxis()->SetTitle("Resolution (P_{T})");     
      jet4Reso_DeltaR->Draw("COL");
      mycanvas->SaveAs("jet4Reso_DeltaR.png");
 
