@@ -14,7 +14,7 @@ R__LOAD_LIBRARY(libDelphes)
 #endif
 //put header files you need here
 
-void AnalyzeM(const char *inputFile, const char *outputFile){
+void macroExample(const char *inputFile, const char *outputFile){
      gSystem->Load("libDelphes.so");
      TFile *file_sig = new TFile(inputFile);
      TFile *output = new TFile(outputFile, "recreate");
