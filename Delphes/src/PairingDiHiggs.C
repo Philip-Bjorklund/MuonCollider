@@ -57,10 +57,10 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      TH1D *AKTGenMass2Comp = new TH1D("AKTGenMass2Comp", "AKTGenMass2Comp", 200 , -1, 2); 
      TH1D *GenUncutMass2 = new TH1D("GenUncutMass2", "GenUncutMass2", 100 , 0, 600); 
  
-     TH1D *AKTGenPt1Comp = new TH1D("AKTGenPt1Comp", "AKTGenPt1Comp", 200 , -1, 9); 
-     TH1D *AKTGenPt2Comp = new TH1D("AKTGenPt2Comp", "AKTGenPt2Comp", 200 , -1, 9); 
-     TH1D *AKTGenPt3Comp = new TH1D("AKTGenPt3Comp", "AKTGenPt3Comp", 200 , -1, 9); 
-     TH1D *AKTGenPt4Comp = new TH1D("AKTGenPt4Comp", "AKTGenPt4Comp", 200 , -1, 2); 
+     TH1D *AKTGenPt1Comp = new TH1D("AKTGenPt1Comp", "AKTGenPt1Comp", 200 , -1, 5); 
+     TH1D *AKTGenPt2Comp = new TH1D("AKTGenPt2Comp", "AKTGenPt2Comp", 200 , -1, 5); 
+     TH1D *AKTGenPt3Comp = new TH1D("AKTGenPt3Comp", "AKTGenPt3Comp", 200 , -1, 5); 
+     TH1D *AKTGenPt4Comp = new TH1D("AKTGenPt4Comp", "AKTGenPt4Comp", 200 , -1, 5); 
 
      TH2D *jet1Reso_Pt = new TH2D("jet1Reso_Pt", "jet1Reso_Pt", 70, 0, 400, 70, -1, 4); 
      TH2D *jet2Reso_Pt = new TH2D("jet2Reso_Pt", "jet2Reso_Pt", 70, 0, 400, 70, -1, 4); 
@@ -76,6 +76,11 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      TH1D *badjet2DeltaR = new TH1D("badjet2DeltaR", "badjet2DeltaR", 100, 0, 0.5); 
      TH1D *badjet3DeltaR = new TH1D("badjet3DeltaR", "badjet3DeltaR", 100, 0, 0.5); 
      TH1D *badjet4DeltaR = new TH1D("badjet4DeltaR", "badjet4DeltaR", 100, 0, 0.5); 
+     
+     TH1D *alljet1DeltaR = new TH1D("alljet1DeltaR", "alljet1DeltaR", 100, 0, 0.5); 
+     TH1D *alljet2DeltaR = new TH1D("alljet2DeltaR", "alljet2DeltaR", 100, 0, 0.5); 
+     TH1D *alljet3DeltaR = new TH1D("alljet3DeltaR", "alljet3DeltaR", 100, 0, 0.5); 
+     TH1D *alljet4DeltaR = new TH1D("alljet4DeltaR", "alljet4DeltaR", 100, 0, 0.5); 
      /*
      TH3D *jet1Reso_DeltaR_Pt = new TH3D("jet1Reso_DeltaR_Pt", "jet1Reso_DeltaR_Pt", 20, 0, 400, 20, 0, 0.5, 20, -1, 4); 
      TH3D *jet2Reso_DeltaR_Pt = new TH3D("jet2Reso_DeltaR_Pt", "jet2Reso_DeltaR_Pt", 20, 0, 400, 20, 0, 0.5, 20, -1, 4); 
@@ -450,6 +455,10 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 		 AKTGenPt2Comp->Fill(AKTGenPt2diff);
 		 AKTGenPt3Comp->Fill(AKTGenPt3diff);
 		 AKTGenPt4Comp->Fill(AKTGenPt4diff);
+		 alljet1DeltaR->Fill(deltaR[0]);
+		 alljet2DeltaR->Fill(deltaR[1]);
+		 alljet3DeltaR->Fill(deltaR[2]);
+		 alljet4DeltaR->Fill(deltaR[3]);
 		 if (abs(AKTGenPt1diff)>=0.15) {
 		     jet1Reso_Pt->Fill(Genpt[0], AKTGenPt1diff);
                      jet1Reso_DeltaR->Fill(deltaR[0], AKTGenPt1diff);
@@ -517,7 +526,7 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      jetpair1fit->SetParLimits(3,0,60);
      jetpair1fit->SetParLimits(4,5,40);
 	     
-     TCanvas *mycanvas = new TCanvas("mycanvas","My Canvas",200,10,600,480);
+     TCanvas *mycanvas = new TCanvas("mycanvas","My Canvas",800,600);
      cout <<endl<< "Run gaussian fit for the leading anti-KT jet pair..."<<endl;
      AKTjetMass1->Fit("jetpair1fit","R");
      jetpair1fit->GetParameters(param);
@@ -628,25 +637,70 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      jet4Reso_DeltaR->Draw();//"COLZ");
      mycanvas->SaveAs("jet4Reso_DeltaR.png");
 
+     alljet1DeltaR->Draw();
+     alljet1DeltaR->SetLineColor(kRed);
      badjet1DeltaR->GetXaxis()->SetTitle("#Delta_{R}");
      badjet1DeltaR->GetYaxis()->SetTitle("Event");   
-     badjet1DeltaR->Draw();
+     badjet1DeltaR->SetStats(0);
+     badjet1DeltaR->Draw("same");
+     badjet1DeltaR->SetLineColor(kBlue+1);
+     TH1D *jet1DeltaRratio = (TH1D*)badjet1DeltaR->Clone("jet1DeltaRratio");
+     jet1DeltaRratio->SetLineColor(kBlack);
+     jet1DeltaRratio->Sumw2();
+     jet1DeltaRratio->SetStats(0);
+     jet1DeltaRratio->Divide(alljet1DeltaR);
+     jet1DeltaRratio->Scale(100);
+     jet1DeltaRratio->Draw("same");
      mycanvas->SaveAs("badjet1DeltaR.png");
  
+     alljet2DeltaR->Draw();
+     alljet2DeltaR->SetLineColor(kRed);
      badjet2DeltaR->GetXaxis()->SetTitle("#Delta_{R}");
      badjet2DeltaR->GetYaxis()->SetTitle("Event");   
-     badjet2DeltaR->Draw();
+     badjet2DeltaR->SetStats(0);
+     badjet2DeltaR->Draw("same");
+     badjet2DeltaR->SetLineColor(kBlue+1);
+     TH1D *jet2DeltaRratio = (TH1D*)badjet2DeltaR->Clone("jet2DeltaRratio");
+     jet2DeltaRratio->SetLineColor(kBlack);
+     jet2DeltaRratio->Sumw2();
+     jet2DeltaRratio->SetStats(0);
+     jet2DeltaRratio->Divide(alljet2DeltaR);
+     jet2DeltaRratio->Scale(100);
+     jet2DeltaRratio->Draw("same");
      mycanvas->SaveAs("badjet2DeltaR.png");
  
+     alljet3DeltaR->Draw();
+     alljet3DeltaR->SetLineColor(kRed);
      badjet3DeltaR->GetXaxis()->SetTitle("#Delta_{R}");
      badjet3DeltaR->GetYaxis()->SetTitle("Event");   
-     badjet3DeltaR->Draw();
+     badjet3DeltaR->SetStats(0);
+     badjet3DeltaR->Draw("same");
+     badjet3DeltaR->SetLineColor(kBlue+1);
+     TH1D *jet3DeltaRratio = (TH1D*)badjet3DeltaR->Clone("jet3DeltaRratio");
+     jet3DeltaRratio->SetLineColor(kBlack);
+     jet3DeltaRratio->Sumw2();
+     jet3DeltaRratio->SetStats(0);
+     jet3DeltaRratio->Divide(alljet3DeltaR);
+     jet3DeltaRratio->Scale(100);
+     jet3DeltaRratio->Draw("same");
      mycanvas->SaveAs("badjet3DeltaR.png");
  
+     alljet4DeltaR->Draw();
+     alljet4DeltaR->SetLineColor(kRed);
      badjet4DeltaR->GetXaxis()->SetTitle("#Delta_{R}");
      badjet4DeltaR->GetYaxis()->SetTitle("Event");   
-     badjet4DeltaR->Draw();
+     badjet4DeltaR->SetStats(0);
+     badjet4DeltaR->Draw("same");
+     badjet4DeltaR->SetLineColor(kBlue+1);
+     TH1D *jet4DeltaRratio = (TH1D*)badjet4DeltaR->Clone("jet4DeltaRratio");
+     jet4DeltaRratio->SetLineColor(kBlack);
+     jet4DeltaRratio->Sumw2();
+     jet4DeltaRratio->SetStats(0);
+     jet4DeltaRratio->Divide(alljet4DeltaR);
+     jet4DeltaRratio->Scale(100);
+     jet4DeltaRratio->Draw("same");
      mycanvas->SaveAs("badjet4DeltaR.png");
+ 
 /*
      jet1Reso_DeltaR_Pt->Draw("COLZ");
      mycanvas->SaveAs("jet1Reso_DeltaR_Pt.png");
@@ -687,6 +741,10 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      badjet2DeltaR->Write();
      badjet3DeltaR->Write();
      badjet4DeltaR->Write();
+     alljet1DeltaR->Write();
+     alljet2DeltaR->Write();
+     alljet3DeltaR->Write();
+     alljet4DeltaR->Write();
 /*
      jet1Reso_DeltaR_Pt->Write();
      jet2Reso_DeltaR_Pt->Write();
