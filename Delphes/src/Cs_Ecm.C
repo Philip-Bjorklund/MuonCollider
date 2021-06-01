@@ -15,27 +15,6 @@ R__LOAD_LIBRARY(libDelphes)
 #include <iostream>
 #include <fstream>
 #include <vector>
-//put header files you need here
-/*struct data_t{
-    string IS;
-    string FS;
-    int Ecm;
-    double Cs;
-    double dCs;
-};
-*/
-/*
-std::istream &operator>>(std::istream &ist, data_t &data){
-    char comma = ',' ;
-    ist >> data.IS >> comma
-	>> data.FS >> comma
-	>> data.Ecm >> comma
-	>> data.Cs >> comma
-	>> data.dCs
-    ;
-    return ist;
-}
-*/
 void Cs_Ecm(const char *outputFile){
      std::ifstream data("mm-cs-data.csv");
      std::string line;
@@ -86,63 +65,50 @@ void Cs_Ecm(const char *outputFile){
 	    aaEcmVec.push_back(std::stod(datavect[entry][2]));
 	    aaCsVec.push_back(std::stod(datavect[entry][3]));
 	}
-
 	if (datavect[entry][1]=="ff") {
 	    ffEcmVec.push_back(std::stod(datavect[entry][2]));
 	    ffCsVec.push_back(std::stod(datavect[entry][3]));
 	}
-
 	if (datavect[entry][1]=="mmh") {
 	    mmhEcmVec.push_back(std::stod(datavect[entry][2]));
 	    mmhCsVec.push_back(std::stod(datavect[entry][3]));
 	}
-	
 	if (datavect[entry][1]=="mmhh") {
             mmhhEcmVec.push_back(std::stod(datavect[entry][2]));
 	    mmhhCsVec.push_back(std::stod(datavect[entry][3]));
 	}
-	
 	if (datavect[entry][1]=="mmz") {
             mmzEcmVec.push_back(std::stod(datavect[entry][2]));
 	    mmzCsVec.push_back(std::stod(datavect[entry][3]));
 	}
-	
 	if (datavect[entry][1]=="zh") {
             zhEcmVec.push_back(std::stod(datavect[entry][2]));
 	    zhCsVec.push_back(std::stod(datavect[entry][3]));
 	}
-	
 	if (datavect[entry][1]=="zz") {
             zzEcmVec.push_back(std::stod(datavect[entry][2]));
 	    zzCsVec.push_back(std::stod(datavect[entry][3]));
 	}
-	
 	if (datavect[entry][1]=="vva") {
             vvaEcmVec.push_back(std::stod(datavect[entry][2]));
 	    vvaCsVec.push_back(std::stod(datavect[entry][3]));
 	}
-	
 	if (datavect[entry][1]=="vvh") {
 	    vvhEcmVec.push_back(std::stod(datavect[entry][2]));
 	    vvhCsVec.push_back(std::stod(datavect[entry][3]));
 	}
-	
 	if (datavect[entry][1]=="vvhh") {
 	    vvhhEcmVec.push_back(std::stod(datavect[entry][2]));
 	    vvhhCsVec.push_back(std::stod(datavect[entry][3]));
 	}
-				
 	if (datavect[entry][1]=="vvz") {
 	    vvzEcmVec.push_back(std::stod(datavect[entry][2]));
 	    vvzCsVec.push_back(std::stod(datavect[entry][3]));
-	
 	}
-	
 	if (datavect[entry][1]=="ww") {
 	    wwEcmVec.push_back(std::stod(datavect[entry][2]));
 	    wwCsVec.push_back(std::stod(datavect[entry][3]));
 	}
-	
 	if (datavect[entry][1]=="za") {
             zaEcmVec.push_back(std::stod(datavect[entry][2]));
 	    zaCsVec.push_back(std::stod(datavect[entry][3]));
@@ -174,6 +140,7 @@ void Cs_Ecm(const char *outputFile){
      Double_t vvzEcm[aaEcmVec.size()];
      Double_t wwEcm[aaEcmVec.size()];
      Double_t zaEcm[aaEcmVec.size()];
+
      std::copy(aaEcmVec.begin(), aaEcmVec.end(), aaEcm);
      std::copy(ffEcmVec.begin(), ffEcmVec.end(), ffEcm);
      std::copy(mmhEcmVec.begin(), mmhEcmVec.end(), mmhEcm);
@@ -200,6 +167,7 @@ void Cs_Ecm(const char *outputFile){
      std::copy(vvzCsVec.begin(), vvzCsVec.end(), vvzCs);
      std::copy(wwCsVec.begin(), wwCsVec.end(), wwCs);
      std::copy(zaCsVec.begin(), zaCsVec.end(), zaCs);
+
      TGraph *aa = new TGraph (7, aaEcm, aaCs); 
      TGraph *ff = new TGraph (7, ffEcm, ffCs); 
      TGraph *mmh = new TGraph (7, mmhEcm, mmhCs); 
@@ -216,9 +184,9 @@ void Cs_Ecm(const char *outputFile){
 
      auto canvas = new TCanvas("canvas","Cross Section vs. Center of Mass Energy", 1000, 1000);
      auto pad = new TPad("pad", "", 0, 0, 1, 1);
-     //pad->SetGrid();
      pad->Draw();
      pad->cd();
+
      aa->SetLineColor(1);
      ff->SetLineColor(920);
      mmh->SetLineColor(632);
@@ -267,6 +235,7 @@ void Cs_Ecm(const char *outputFile){
      canvas->SetLogy(1);
      mg->GetXaxis()->SetTitle("E_{CM} [TeV]");
      mg->GetYaxis()->SetTitle("#sigma(#mu^{+}#mu^{-}#rightarrow X) [pb]");
+
      TLegend *legend = new TLegend(0.15,0.15,0.23, 0.4);
      legend->SetHeader("Channels");
      legend->AddEntry(aa,"#gamma#gamma","l");
@@ -285,6 +254,7 @@ void Cs_Ecm(const char *outputFile){
      legend->Draw();
      canvas->cd();
      canvas->SaveAs("Cs_Ecm.png"); 
+
      aa->Write();
      ff->Write();
      mmh->Write();
