@@ -228,7 +228,7 @@ void Cs_Ecm(const char *outputFile){
      zz->SetLineColor(616);
      vva->SetLineColor(900);
      vvh->SetLineColor(800);
-     vvhh->SetLineColor(820);
+     vvhh->SetLineColor(30);
      vvz->SetLineColor(840);
      ww->SetLineColor(860);
      za->SetLineColor(880);
@@ -251,7 +251,7 @@ void Cs_Ecm(const char *outputFile){
      mg->Add(aa);
      mg->Add(ff);
      mg->Add(mmh);
-     mg->Add(mmh);
+     mg->Add(mmhh);
      mg->Add(mmz);
      mg->Add(zh);
      mg->Add(zz);
