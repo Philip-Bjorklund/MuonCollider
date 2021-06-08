@@ -67,6 +67,17 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      TH2D *jet3Reso_Pt = new TH2D("jet3Reso_Pt", "jet3Reso_Pt", 70, 0, 400, 70, -1, 4); 
      TH2D *jet4Reso_Pt = new TH2D("jet4Reso_Pt", "jet4Reso_Pt", 70, 0, 400, 70, -1, 4); 
 
+     TH2D *jet1Reso_eta = new TH2D("jet1Reso_eta", "jet1Reso_eta", 70, -3, 3, 70, -1, 4); 
+     TH2D *jet2Reso_eta = new TH2D("jet2Reso_eta", "jet2Reso_eta", 70, -3, 3, 70, -1, 4); 
+     TH2D *jet3Reso_eta = new TH2D("jet3Reso_eta", "jet3Reso_eta", 70, -3, 3, 70, -1, 4); 
+     TH2D *jet4Reso_eta = new TH2D("jet4Reso_eta", "jet4Reso_eta", 70, -3, 3, 70, -1, 4); 
+
+     TH2D *jet1Reso_theta = new TH2D("jet1Reso_theta", "jet1Reso_theta", 70, 0, 3.1415, 70, -1, 4); 
+     TH2D *jet2Reso_theta = new TH2D("jet2Reso_theta", "jet2Reso_theta", 70, 0, 3.1315, 70, -1, 4); 
+     TH2D *jet3Reso_theta = new TH2D("jet3Reso_theta", "jet3Reso_theta", 70, 0, 3.1415, 70, -1, 4); 
+     TH2D *jet4Reso_theta = new TH2D("jet4Reso_theta", "jet4Reso_theta", 70, 0, 3.1415, 70, -1, 4); 
+
+
      TH2D *jet1Reso_DeltaR = new TH2D("jet1Reso_DeltaR", "jet1Reso_DeltaR", 50, 0, 0.5, 50, -1, 4); 
      TH2D *jet2Reso_DeltaR = new TH2D("jet2Reso_DeltaR", "jet2Reso_DeltaR", 50, 0, 0.5, 50, -1, 4); 
      TH2D *jet3Reso_DeltaR = new TH2D("jet3Reso_DeltaR", "jet3Reso_DeltaR", 50, 0, 0.5, 50, -1, 4); 
@@ -90,18 +101,22 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 
 
      Double_t AKTjet1eta1;
+     Double_t AKTjet1theta1;
      Double_t AKTjet1phi1;
      Double_t AKTjet1pt1;
      Double_t AKTjet1mass1;
      Double_t AKTjet1eta2;
+     Double_t AKTjet1theta2;
      Double_t AKTjet1phi2;
      Double_t AKTjet1pt2;
      Double_t AKTjet1mass2;
      Double_t AKTjet2eta1;
+     Double_t AKTjet2theta1;
      Double_t AKTjet2phi1;
      Double_t AKTjet2pt1;
      Double_t AKTjet2mass1;
      Double_t AKTjet2eta2;
+     Double_t AKTjet2theta2;
      Double_t AKTjet2phi2;
      Double_t AKTjet2pt2;
      Double_t AKTjet2mass2;
@@ -395,6 +410,8 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	         swap(AKTjetpair1Mass, AKTjetpair2Mass);
 		 swap(jet1entry,jet3entry);
 		 swap(jet2entry,jet4entry);
+		 swap(AKTjet1eta1,AKTjet2eta1);
+		 swap(AKTjet1eta2,AKTjet2eta2);
 	     }
 	      
              Gen1eta = GenJet_eta->GetValue(jet1entry);
@@ -434,13 +451,17 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	     //int Gensize = sizeof(Genpt) / sizeof(Genpt[0]);
 
 	     Double_t deltaR[] = { jet1DeltaR, jet2DeltaR, jet3DeltaR, jet4DeltaR };
-             //sort pt 
+
+	     Double_t AKTeta[] = { AKTjet1eta1, AKTjet1eta2, AKTjet2eta1, AKTjet2eta2 };
+             
+	     //sort pt 
 	     for (int i=0; i<4; i++) {
 	         for (int j=i+1; j<4; j++) {
 		     if (AKTpt[j] > AKTpt[i]) {
                          swap(AKTpt[j], AKTpt[i]);
 			 swap(Genpt[j], Genpt[i]);
 			 swap(deltaR[j], deltaR[i]);
+			 swap(AKTeta[j], AKTeta[i]);
 		     }
 		 }
 	     }
@@ -450,6 +471,11 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 	     Double_t AKTGenPt3diff = (AKTpt[2] - Genpt[2])/Genpt[2];
 	     Double_t AKTGenPt4diff = (AKTpt[3] - Genpt[3])/Genpt[3];
 
+	     //calculate angle
+             AKTjet1theta1 = 2 * atan(exp(-AKTeta[0]));
+             AKTjet1theta2 = 2 * atan(exp(-AKTeta[1]));
+             AKTjet2theta1 = 2 * atan(exp(-AKTeta[2]));
+             AKTjet2theta2 = 2 * atan(exp(-AKTeta[3]));
              if (AKT1jet1flag==true and AKT1jet2flag==true and AKT2jet1flag==true and AKT2jet2flag==true){
 	         AKTGenPt1Comp->Fill(AKTGenPt1diff);
 		 AKTGenPt2Comp->Fill(AKTGenPt2diff);
@@ -459,29 +485,33 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
 		 alljet2DeltaR->Fill(deltaR[1]);
 		 alljet3DeltaR->Fill(deltaR[2]);
 		 alljet4DeltaR->Fill(deltaR[3]);
-		 if (abs(AKTGenPt1diff)>=0.15) {
+		 if (abs(AKTGenPt1diff)>=0.1) {
 		     jet1Reso_Pt->Fill(Genpt[0], AKTGenPt1diff);
                      jet1Reso_DeltaR->Fill(deltaR[0], AKTGenPt1diff);
 		     badjet1DeltaR->Fill(deltaR[0]);
-		     //jet1Reso_DeltaR_Pt->Fill(Genpt[0], deltaR[0], AKTGenPt1diff);
+		     jet1Reso_eta->Fill(AKTeta[0], AKTGenPt1diff);
+		     jet1Reso_theta->Fill(AKTjet1theta1, AKTGenPt1diff);
 		 }
-                 if (abs(AKTGenPt2diff)>=0.15) {
+                 if (abs(AKTGenPt2diff)>=0.1) {
 		     jet2Reso_Pt->Fill(Genpt[1], AKTGenPt2diff);
 		     jet2Reso_DeltaR->Fill(deltaR[1], AKTGenPt2diff);
 		     badjet2DeltaR->Fill(deltaR[1]);
-		     //jet2Reso_DeltaR_Pt->Fill(Genpt[1], deltaR[1], AKTGenPt2diff);
+		     jet2Reso_eta->Fill(AKTeta[1], AKTGenPt2diff);
+		     jet2Reso_theta->Fill(AKTjet1theta2, AKTGenPt2diff);
 		 }
-                 if (abs(AKTGenPt3diff)>=0.15) {
+                 if (abs(AKTGenPt3diff)>=0.1) {
 		     jet3Reso_Pt->Fill(Genpt[2], AKTGenPt3diff);
 		     jet3Reso_DeltaR->Fill(deltaR[2], AKTGenPt3diff);
 		     badjet3DeltaR->Fill(deltaR[2]);
-		     //jet3Reso_DeltaR_Pt->Fill(Genpt[2], deltaR[2], AKTGenPt3diff);
+		     jet3Reso_eta->Fill(AKTeta[2], AKTGenPt3diff);
+		     jet3Reso_theta->Fill(AKTjet2theta1, AKTGenPt3diff);
 		 }
-                 if (abs(AKTGenPt4diff)>=0.15) {
+                 if (abs(AKTGenPt4diff)>=0.1) {
 		     jet4Reso_Pt->Fill(Genpt[3], AKTGenPt4diff);
 		     jet4Reso_DeltaR->Fill(deltaR[3], AKTGenPt4diff);
 		     badjet4DeltaR->Fill(deltaR[3]);
-		     //jet4Reso_DeltaR_Pt->Fill(Genpt[3], deltaR[3], AKTGenPt4diff);
+		     jet4Reso_eta->Fill(AKTeta[3], AKTGenPt4diff);
+		     jet4Reso_theta->Fill(AKTjet2theta2, AKTGenPt4diff);
 		 }
 
 	         if (abs(AKTGenPt1diff)<0.15 and abs(AKTGenPt2diff)<0.15 and abs(AKTGenPt3diff)<0.15 and abs(AKTGenPt4diff)<0.15) { 
@@ -637,6 +667,46 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      jet4Reso_DeltaR->Draw();//"COLZ");
      mycanvas->SaveAs("jet4Reso_DeltaR.png");
 
+     jet1Reso_eta->GetXaxis()->SetTitle("#eta");
+     jet1Reso_eta->GetYaxis()->SetTitle("Resolution (P_{T})");
+     jet1Reso_eta->Draw();//"COLZ");
+     mycanvas->SaveAs("jet1Reso_eta.png");
+ 
+     jet2Reso_eta->GetXaxis()->SetTitle("#eta");
+     jet2Reso_eta->GetYaxis()->SetTitle("Resolution (P_{T})");
+     jet2Reso_eta->Draw();//"COLZ");
+     mycanvas->SaveAs("jet2Reso_eta.png");
+ 
+     jet3Reso_eta->GetXaxis()->SetTitle("#eta");
+     jet3Reso_eta->GetYaxis()->SetTitle("Resolution (P_{T})");
+     jet3Reso_eta->Draw();//"COLZ");
+     mycanvas->SaveAs("jet3Reso_eta.png");
+ 
+     jet4Reso_eta->GetXaxis()->SetTitle("#eta");
+     jet4Reso_eta->GetYaxis()->SetTitle("Resolution (P_{T})");
+     jet4Reso_eta->Draw();//"COLZ");
+     mycanvas->SaveAs("jet4Reso_eta.png");
+ 
+     jet1Reso_theta->GetXaxis()->SetTitle("#theta");
+     jet1Reso_theta->GetYaxis()->SetTitle("Resolution (P_{T})");
+     jet1Reso_theta->Draw();//"COLZ");
+     mycanvas->SaveAs("jet1Reso_theta.png");
+  
+     jet2Reso_theta->GetXaxis()->SetTitle("#theta");
+     jet2Reso_theta->GetYaxis()->SetTitle("Resolution (P_{T})");
+     jet2Reso_theta->Draw();//"COLZ");
+     mycanvas->SaveAs("jet2Reso_theta.png");
+  
+     jet3Reso_theta->GetXaxis()->SetTitle("#theta");
+     jet3Reso_theta->GetYaxis()->SetTitle("Resolution (P_{T})");
+     jet3Reso_theta->Draw();//"COLZ");
+     mycanvas->SaveAs("jet3Reso_theta.png");
+  
+     jet4Reso_theta->GetXaxis()->SetTitle("#theta");
+     jet4Reso_theta->GetYaxis()->SetTitle("Resolution (P_{T})");
+     jet4Reso_theta->Draw();//"COLZ");
+     mycanvas->SaveAs("jet4Reso_theta.png");
+            
      alljet1DeltaR->Draw();
      alljet1DeltaR->SetLineColor(kRed);
      badjet1DeltaR->GetXaxis()->SetTitle("#Delta_{R}");
@@ -700,20 +770,6 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      jet4DeltaRratio->Scale(100);
      jet4DeltaRratio->Draw("same");
      mycanvas->SaveAs("badjet4DeltaR.png");
- 
-/*
-     jet1Reso_DeltaR_Pt->Draw("COLZ");
-     mycanvas->SaveAs("jet1Reso_DeltaR_Pt.png");
- 
-     jet2Reso_DeltaR_Pt->Draw("COLZ");
-     mycanvas->SaveAs("jet2Reso_DeltaR_Pt.png");
- 
-     jet3Reso_DeltaR_Pt->Draw("COLZ");
-     mycanvas->SaveAs("jet3Reso_DeltaR_Pt.png");
- 
-     jet4Reso_DeltaR_Pt->Draw("COLZ");
-     mycanvas->SaveAs("jet4Reso_DeltaR_Pt.png");
-*/
      cout <<endl<< "Output in TTree..."<<endl;
 
      AKTjetMass1->Write();
@@ -745,12 +801,17 @@ void PairingDiHiggs(const char *inputFile, const char *outputFile){
      alljet2DeltaR->Write();
      alljet3DeltaR->Write();
      alljet4DeltaR->Write();
-/*
-     jet1Reso_DeltaR_Pt->Write();
-     jet2Reso_DeltaR_Pt->Write();
-     jet3Reso_DeltaR_Pt->Write();
-     jet4Reso_DeltaR_Pt->Write();
-*/
+
+     jet1Reso_eta->Write();
+     jet2Reso_eta->Write();
+     jet3Reso_eta->Write();
+     jet4Reso_eta->Write();
+
+     jet1Reso_theta->Write();
+     jet2Reso_theta->Write();
+     jet3Reso_theta->Write();
+     jet4Reso_theta->Write();
+
      tree_output->Write();
 
      output->Close();
