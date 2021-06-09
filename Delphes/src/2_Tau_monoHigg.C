@@ -35,7 +35,7 @@ void macroExample(const char *inputFile, const char *outputFile){
      TLeaf *TPt= tree_sig->GetLeaf("Particle.PT");
      for(Long64_t entry=0; entry < nEntries; entry++){
        tree_sig->GetEntry(entry);
-	     tree_output->GetEntry(entry);
+       tree_output->GetEntry(entry);
        if (PID == 15){
          TEtaH->Fill(TEta);
          TPhiH->Fill(TPhi);
