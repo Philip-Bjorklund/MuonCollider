@@ -32,22 +32,29 @@ void macroExample(const char *inputFile, const char *outputFile){
 	
      TLeaf *TEta = tree_sig->GetLeaf("Particle.Eta");
      TLeaf *TPhi = tree_sig->GetLeaf("Particle.Phi");
-     TLeaf *TPt= tree_sig->GetLeaf("Particle.PT");
+     TLeaf *TPt = tree_sig->GetLeaf("Particle.PT");
+     TLeaf *TPID = tree_sig->GetLeaf("Particle.PID");
      
      Float_t TauEta;
      Float_t TauPhi;
      Float_t TauPt;
+     Float_t PID;
      for(Long64_t entry=0; entry < nEntries; entry++){
-       tree_sig->GetEntry(entry);
-       tree_output->GetEntry(entry);
-       if (PID == 15){
-	 TauEta = TEta->GetValue(genentry);
-	 TauPhi = TPhi->GetValue(genentry);
-	 TauPt = TPt->GetValue(genentry);
-         TEtaH->Fill(TauEta);
-         TPhiH->Fill(TauPhi);
-         TPtH->Fill(TauPt);
-       }
+        tree_sig->GetEntry(entry);
+        tree_output->GetEntry(entry);
+        TPID->GetBranch()->GetEntry(entry);
+        PID = TPID->GetValue(entry);
+        TEta->GetBranch()->GetEntry(entry);
+        TPhi->GetBranch()->GetEntry(entry);
+        TPt->GetBranch()->GetEntry(entry);
+        if (PID == 15.0){
+	   TauEta = TEta->GetValue(entry);
+	   TauPhi = TPhi->GetValue(entry);
+	   TauPt = TPt->GetValue(entry);
+           TEtaH->Fill(TauEta);
+           TPhiH->Fill(TauPhi);
+           TPtH->Fill(TauPt);
+        }
 	 //write macro algorithm here
      }
      tree_output->Write();
