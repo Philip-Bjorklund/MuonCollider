@@ -57,6 +57,9 @@ void macroExample(const char *inputFile, const char *outputFile){
         }
 	 //write macro algorithm here
      }
+     TEtaH->Write();
+     TPhiH->Write();
+     TPtH->Write();
      tree_output->Write();
      output->Close();
      file_sig->Close();
