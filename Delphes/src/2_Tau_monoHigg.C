@@ -33,13 +33,20 @@ void macroExample(const char *inputFile, const char *outputFile){
      TLeaf *TEta = tree_sig->GetLeaf("Particle.Eta");
      TLeaf *TPhi = tree_sig->GetLeaf("Particle.Phi");
      TLeaf *TPt= tree_sig->GetLeaf("Particle.PT");
+     
+     Float_t TauEta;
+     Float_t TauPhi;
+     Float_t TauPt;
      for(Long64_t entry=0; entry < nEntries; entry++){
        tree_sig->GetEntry(entry);
        tree_output->GetEntry(entry);
        if (PID == 15){
-         TEtaH->Fill(TEta);
-         TPhiH->Fill(TPhi);
-         TPtH->Fill(TPt);
+	 TauEta = TEta->GetValue(genentry);
+	 TauPhi = TPhi->GetValue(genentry);
+	 TauPt = TPt->GetValue(genentry);
+         TEtaH->Fill(TauEta);
+         TPhiH->Fill(TauPhi);
+         TPtH->Fill(TauPt);
        }
 	 //write macro algorithm here
      }
